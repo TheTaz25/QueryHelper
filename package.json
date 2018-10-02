@@ -1,0 +1,11 @@
+{
+  "name": "queryhelper",
+  "version": "0.1.0",
+  "description": "A handy little helper to create SQL querystrings",
+  "main": "index.js",
+  "keywords": [
+    "SQL", "Query", "MySQL", "MariaDB"
+  ],
+  "author": "Denis Ergin",
+  "license": "ISC"
+}
