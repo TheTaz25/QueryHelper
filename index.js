@@ -78,7 +78,6 @@ class sql {
         } else {
           this.whereString += " OR " + where + nope + "IN ('" + sub.join("', '") + "')";
         }
-        this.whereString += " " +
       } else if(sub instanceof sql){
         if(condition.includes("AND")){
           this.whereString += " AND " + where + nope + "IN (" + sub.getSubQueryString() + ")";

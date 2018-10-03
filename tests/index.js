@@ -1,13 +1,13 @@
-const mysql = require('mysql');
+// const mysql = require('mysql');
 const config = require('./config');
-const sql = require('./index0.js');
+const sql = require('queryhelper');
 
 console.log(sql);
-
-var poolConfig = Object.assign({}, config.sql);
-poolConfig.connectionLimit = 10;
-
-var pool = mysql.createPool(poolConfig);
+//
+// var poolConfig = Object.assign({}, config.sql);
+// poolConfig.connectionLimit = 10;
+//
+// var pool = mysql.createPool(poolConfig);
 
 let sub = new sql('Customers')
   .select(["Customers.CustomerName", "Orders.OrderID"])
@@ -24,11 +24,13 @@ let sub = new sql('Customers')
 // let query = new sql("Orders").select(["Shippers.ShipperName", {column: "Orders.OrderID", alias: "NumberOfOrders"}]).count("Orders.OrderID").l_join("Shippers", "Orders.ShipperID=Shippers.ShipperID").group(["ShipperName"]).getQueryString();
 let query = new sql("Customers").select(["CustomerID", "Country"]).count("CustomerID").group(["Country"]).having("CustomerID > 5").count("CustomerID").order(["CustomerID DESC"]).count("CustomerID").getQueryString();
 console.log(query);
-pool.query(query, (error, results, fields) => {
-  console.log(error);
-  console.log(results.length);
-  console.log(results);
-  // console.log(error);
-});
+// pool.query(query, (error, results, fields) => {
+//   console.log(error);
+//   console.log(results.length);
+//   console.log(results);
+//   // console.log(error);
+// });
+//
+console.log(query);
 
 return 0;
