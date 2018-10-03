@@ -16,7 +16,7 @@ class sql {
     this.limiter = "";
     return this;
   }
-  select(select, distinct = false){
+  select(select, distinct){
     this.query = "";
     var isDistinct = distinct ? " DISTINCT" : "";
     var tmp = "";
@@ -56,13 +56,26 @@ class sql {
     this.lastChange = "where";
     return this;
   }
-  whereIn(where, sub, not){
-    var nope = not ? " NOT " : " ";
+  whereIn(where, sub, condition){
+    var nope = condition.includes("!") ? " NOT " : " ";
+    if(this.whereString === ""){
+      if(sub instanceof Array){
+        this.whereString = " WHERE " + where + nope + "IN ('" + sub.join("', '") + "')";
+      } else if(sub instanceof sql){
+        this.whereString = " WHERE " + where + nope + "IN (" + sub.getSubQueryString() + ")";
+      } else {
+        console.warn("2nd parameter has to be of type Array or sql!");
+        return this;
+      }
+    } else {
+      if(sub instanceof Array){
+        this.whereString += " "
+      } else if(sub instanceof sql){
 
-    if(sub instanceof Array){
-      this.whereString = " WHERE " + where + nope + "IN ('" + sub.join("', '") + "')";
-    } else if(sub instanceof sql){
-      this.whereString = " WHERE " + where + nope + "IN (" + sub.getSubQueryString() + ")";
+      } else {
+        console.warn("2nd parameter has to be of type Array or sql!");
+        return this;
+      }
     }
     this.lastChange = "where";
     return this;
@@ -75,7 +88,7 @@ class sql {
     if(this.whereString === ""){
       this.whereString = " WHERE " + where + " ANY (" + sub.getSubQueryString() + ")";
     } else {
-      this.whereString = " " + condition + " " + where + " ANY (" + sub.getSubQueryString() + ")";
+      this.whereString += " " + condition + " " + where + " ANY (" + sub.getSubQueryString() + ")";
     }
     this.lastChange = "where";
     return this;
@@ -88,7 +101,7 @@ class sql {
     if(this.whereString === ""){
       this.whereString = " WHERE " + where + " ALL (" + sub.getSubQueryString() + ")";
     } else {
-      this.whereString = " " + condition + " " + where +  " ALL (" + sub.getSubQueryString() + ")";
+      this.whereString += " " + condition + " " + where +  " ALL (" + sub.getSubQueryString() + ")";
     }
     this.lastChange = "where";
     return this;
