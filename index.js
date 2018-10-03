@@ -68,10 +68,23 @@ class sql {
         return this;
       }
     } else {
+      if(!condition.includes("AND") && !condition.includes("OR")){
+        console.warn("Condition missing");
+        return this;
+      }
       if(sub instanceof Array){
-        this.whereString += " "
+        if(condition.includes("AND")){
+          this.whereString += " AND " + where + nope + "IN ('" + sub.join("', '") + "')";
+        } else {
+          this.whereString += " OR " + where + nope + "IN ('" + sub.join("', '") + "')";
+        }
+        this.whereString += " " +
       } else if(sub instanceof sql){
-
+        if(condition.includes("AND")){
+          this.whereString += " AND " + where + nope + "IN (" + sub.getSubQueryString() + ")";
+        } else {
+          this.whereString += " OR " + where + nope + "IN (" + sub.getSubQueryString() + ")";
+        }
       } else {
         console.warn("2nd parameter has to be of type Array or sql!");
         return this;
@@ -239,8 +252,8 @@ class sql {
     this.queryAddon = " TOP " + num + percent;
     return this;
   }
-  limit(num){
-    this.limiter = " LIMIT " + num;
+  limit(limit, offset){
+    this.limiter = " LIMIT " + limit + " OFFSET " + offset;
     return this;
   }
   getQueryString(){
@@ -288,45 +301,5 @@ function checkString(arr, matcher){
   }
   return undefined;
 }
-
-//export default sql;
-// var columns = ["test", "users", "password", "usersaccount", "users"];
-// var orders = ["users DSC", "password ASC"];
-// var grouping = ["users", "usersaccount"];
-// var subQuery = new sql("countries").select(["countries"]).where("continent=europe");
-//Select [] from table
-// var test = new sql("pqa").select();
-// Select Distinct!
-//var test = new sql("test").select(columns, true);
-//single where clause
-// var test = new sql("test").select(columns).where("users>=4");
-// single where clause with NOT
-// var test = new sql("test").select(columns).where("users>=4", "!");
-// multi-where with AND
-// var test = new sql("test").select(columns).where("users>=4").where("password LIKE meh", "AND");
-//multi-where with OR
-// var test = new sql("test").select(columns).where("users>=4").where("test=true", "OR");
-//multi-where with NOT AND
-// var test = new sql("test").select(columns).where("users>=4").order(orders).where("test=false", "!AND");
-// order by one
-// var test = new sql("test").select(columns).order(["users DSC"]);
-// order by multiple
-// var test = new sql("test").select(columns).order(orders);
-// where in with array
-// var test = new sql("test").select().whereIn("countries", orders, "x");
-// where in with subquery
-// var test = new sql("test").select().whereIn("countries", subQuery);
-// joins
-// var test = new sql("test").select(["test.id", "join.mission"]).i_join("join", "test.id=join.id");
-// unions with order and all trigger
-// var test = new sql("test").select().union(subQuery, "countries ASC", 1);
-// apply min/max/avg/sum/count on a select statement
-// var test = new sql("test").select(columns).min("users").max("users");
-// grouping
-// var test = new sql("test").select(columns).order(orders).group(grouping);
-// having
-// var test = new sql("test").select(columns).count("test").group(grouping).having("test > 5").count("test");
-// test = test.getQueryString();
-// console.log(test);
 
 module.exports = sql;
