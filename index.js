@@ -252,7 +252,8 @@ class sql {
     return this;
   }
   limit(limit, offset){
-    this.limiter = " LIMIT " + limit + " OFFSET " + offset;
+    const off = offset ? " OFFSET " + offset : "";
+    this.limiter = " LIMIT " + limit + off;
     return this;
   }
   getQueryString(){
